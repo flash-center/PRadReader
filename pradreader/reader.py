@@ -11,6 +11,7 @@ Call via "python reader.py filename". Will prompt for additional info.
 
 import sys
 import os
+import datetime
 # Python3 style input commmand even in Python2; get via "pip install future"
 from builtins import input 
 import numpy as np
@@ -203,6 +204,10 @@ class prad(object):
         """
         print("Writing intermediate prad object file.")
         with open(ofile, 'w') as out:
+            out.write('# PRadReader Generated Input File v1.01a\n')
+            out.write('# Date generated: '
+                      +str(datetime.datetime.now().date()) + ' '
+                      +str(datetime.datetime.now().time()) + '\n')
             out.write("# s2r_cm " + str(self.s2r_cm) + "\n")
             out.write("# s2d_cm " + str(self.s2d_cm) + "\n")
             out.write("# Ep_MeV " + str(self.Ep_MeV) + "\n")
@@ -222,6 +227,11 @@ class prad(object):
             np.savetxt(out, self.mask, delimiter=',', newline='\n')
         
         print("Intermediate prad object file written to '" + ofile + "'.")
+
+    def read_intermediate(self, ifile):
+        pass
+
+
 
 if __name__ == "__main__":
     myrad = prad(sys.argv[0]) # Set the filename, initialize the object
