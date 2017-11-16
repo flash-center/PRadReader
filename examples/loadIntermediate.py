@@ -8,6 +8,9 @@ Created by Scott Feister on Thu Nov 16 15:41:38 2017
 
 from pradreader.reader import loadPRR
 
+def myalgorithm(prad):
+    pass
+
 if __name__ == "__main__":
     filename = "../test/input.txt" # Path to your intermediate .txt file
     prad = loadPRR(filename)
@@ -19,3 +22,5 @@ if __name__ == "__main__":
     print(prad.flux2D) # 2D NumPy array
     print(prad.flux2D_ref) # 2D NumPy array
     print(prad.mask) # 2D NumPy array
+
+    result = myalgorithm(prad)
