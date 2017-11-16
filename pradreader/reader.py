@@ -65,7 +65,7 @@ class prad(object):
         
         # Prompts.
         self.prompts = {
-                'rtype'  : 'Type of file? Options are "carlo",' \
+                'rtype'  : 'Type of file? Options are "prr", "carlo",' \
                             '"mitcsv", "csv", "flash4": ',
                 's2r_cm' : 'Distance from the source to the plasma (in cm): ',
                 's2d_cm' : 'Distance from the source to the screen (in cm): ' ,             
@@ -198,6 +198,7 @@ class prad(object):
     def validate(self):
         """ Ensure the validity of the elements """
         print("Validating elements of the prad object...")
+        #TODO: Validate the object here!
         pass
         print("[No validation function written! Continuing...]")
 
@@ -252,11 +253,11 @@ def loadPRR(ifile='input.txt'):
     
     Useful function to be called from outside modules
     """
-    pr = prad(ifile)
-    pr.rtype = 'prr'
-    pr.read() # Read in the PRR file
-    pr.genmask() # Generate the mask from x/y tuples
-    pr.validate() # Validate that the elements are looking good
+    pr = prad(ifile) # Initialize a prad object with this filename
+    pr.rtype = 'prr' # Specify filetype
+    pr.read() # Read in the file
+    pr.genmask() # Generate the 2D mask from x/y tuples
+    pr.validate() # Validate that all prad object elements are looking good
     return pr
     
 if __name__ == "__main__":
