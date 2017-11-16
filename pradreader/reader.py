@@ -4,7 +4,7 @@
 reader.py: Read in proton radiography of various sources (FLASH4, ...)
 Includes the 'prad' class, which defines an object holding proton radiography data
 
-Created by Scott Feister & J.T. Laune on Fri Jul 28 18:11:48 2017
+Created by Scott Feister, J.T. Laune, and Alemayehu Bogale on Fri Jul 28 18:11:48 2017
 
 Call via "python reader.py filename". Will prompt for additional info.
 """
@@ -14,13 +14,13 @@ import os
 import datetime
 # Python3 style input commmand even in Python2; get via "pip install future"
 from builtins import input 
+from re import match
 import numpy as np
 from .rdflash import readFlash4
 from .rdmit import readmitcsv
 from .rdcarlo import readCarlo
 from .fluxmap import fluxPlot
 from .rdgeneric import readtxt
-from .fluxmap import fluxPlot
 
 class prad(object):
     """
@@ -152,7 +152,10 @@ class prad(object):
         
         print("Reading contents of file: " + self.filename)
                 
-        if self.rtype == 'flash4':
+        if self.rtype == 'prr':
+            self.__readPRR() # Intermediate file format; replace everything
+            
+        elif self.rtype == 'flash4':
             if self.bin_um == None:
                 self.bin_um = float(input(self.prompts['bin_um']))
             s2r_cm, s2d_cm, Ep_MeV, flux2D, flux2D_ref = readFlash4(
@@ -188,9 +191,15 @@ class prad(object):
 
         else:
             raise(Exception("Proton radiography type " 
-                            + str(rtype) + " not recognized"))
+                            + str(self.rtype) + " not recognized"))
                             
         print("File read complete.")
+
+    def validate(self):
+        """ Ensure the validity of the elements """
+        print("Validating elements of the prad object...")
+        pass
+        print("[No validation function written! Continuing...]")
 
     def write(self, ofile='input.txt'):
         """ Create an intermediate text file 
@@ -200,11 +209,13 @@ class prad(object):
             input.txt (file): the intermediate file for every file input
                 e.g. contains s2r_cm, s2d_cm, Ep_MeV, bin_um,
                 flux2D, flux2D_ref, and mask
-
+        Note: This object can be reloaded via:
+            pr = reader.loadPRR('input.txt')
         """
+        
         print("Writing intermediate prad object file.")
         with open(ofile, 'w') as out:
-            out.write('# PRadReader Generated Input File v1.01a\n')
+            out.write('# PRadReader (PRR) Generated Input File v1.01a\n')
             out.write('# Date generated: '
                       +str(datetime.datetime.now().date()) + ' '
                       +str(datetime.datetime.now().time()) + '\n')
@@ -215,7 +226,6 @@ class prad(object):
             
             out.write("# flux2D " + str(self.flux2D.shape) + "\n")
             out.write("# flux2D_ref " + str(self.flux2D_ref.shape) + "\n")
-            out.write("# mask " + str(self.mask.shape) + "\n")
             out.write("# x-mask " + str(self.x_select[0]) 
                       + " %" + " - " + str(self.x_select[1]) + " %" + "\n")
             out.write("# y-mask " + str(self.y_select[0]) 
@@ -224,21 +234,38 @@ class prad(object):
         with open(ofile, 'ab') as out:
             np.savetxt(out, self.flux2D, delimiter=',', newline='\n')
             np.savetxt(out, self.flux2D_ref, delimiter=',', newline='\n')
-            np.savetxt(out, self.mask, delimiter=',', newline='\n')
         
         print("Intermediate prad object file written to '" + ofile + "'.")
-
-    def read_intermediate(self, ifile):
-        pass
-
-
-
+    
+    def __readPRR(self):
+        """
+        (Private) Read the pradreader intermediate file format
+        """
+        # TODO here: Check the PRR file version is appropriate!
+        with open(self.filename) as f:
+            # TODO here: Read in the file contents!
+            pass
+        
+def loadPRR(ifile='input.txt'):
+    """
+    Loads in a pradreader (PRR) intermediate .txt file with no CLI input from user
+    
+    Useful function to be called from outside modules
+    """
+    pr = prad(ifile)
+    pr.rtype = 'prr'
+    pr.read() # Read in the PRR file
+    pr.genmask() # Generate the mask from x/y tuples
+    pr.validate() # Validate that the elements are looking good
+    return pr
+    
 if __name__ == "__main__":
-    myrad = prad(sys.argv[0]) # Set the filename, initialize the object
+    pr = prad(sys.argv[0]) # Set the filename, initialize the object
     # TODO Insert here: Try and guess the rtype by looking at the file (version 2)
-    myrad.read() # Read the file contents; prompt for file type as needed
-    myrad.show() # Display what was just read in
-    myrad.prompt() # Fill in the gaps on parameters
-    myrad.genmask() # Generate the mask from x/y tuples
-    myrad.write(ofile='input.txt') # Write the intermediate prad object file
-    myrad.plot(plotdir='plots') # Save some flux plots
+    pr.read() # Read the file contents; prompt for file type as needed
+    pr.show() # Display what was just read in
+    pr.prompt() # Fill in the gaps on parameters
+    pr.genmask() # Generate the mask from x/y tuples
+    pr.validate() # Validate that the elements are looking good
+    pr.plot(plotdir='plots') # Save some flux plots
+    pr.write(ofile='input.txt') # Write the intermediate prad object file
