@@ -64,19 +64,24 @@ class prad(object):
         
         # Prompts.
         self.prompts = {
-                'rtype'  : 'Type of file? Options are "carlo", "mitcsv", "csv", "flash4": ',
+                'rtype'  : 'Type of file? Options are "carlo",' \
+                            '"mitcsv", "csv", "flash4": ',
                 's2r_cm' : 'Distance from the source to the plasma (in cm): ',
                 's2d_cm' : 'Distance from the source to the screen (in cm): ' ,             
                 'Ep_MeV' : 'Proton energy (in MeV): ',
                 'bin_um' : 'Pixel size of radiograph (in um): ',
                 'x_select' : 'Flux % selection in x-direction.' \
-                             "Enter two numbers separated by a space. (e.g., '0 100'): ", 
+                             'Enter two numbers separated by a space.' \
+                             '(e.g., "0 100"): ', 
                 'y_select' : 'Flux % selection in y-direction ' \
-                             "Enter two numbers separated by a space. (e.g., '0 100'): ", 
+                             'Enter two numbers separated by a space. ' \
+                             '(e.g., "0 100"): ', 
                 }
     
     def __str__(self):
-        return "Prad object from '" + self.filename + "'. Try <object>.show() for more details."
+        return ("Prad object from '" 
+                + self.filename + "'."
+                + "Try <object>.show() for more details.")
 
     def show(self):
         """ Display details of the prad object """
@@ -197,27 +202,25 @@ class prad(object):
 
         """
         print("Writing intermediate prad object file.")
-        out = open(ofile, 'w')
-        out.write("# s2r_cm " + str(self.s2r_cm) + "\n")
-        out.write("# s2d_cm " + str(self.s2d_cm) + "\n")
-        out.write("# Ep_MeV " + str(self.Ep_MeV) + "\n")
-        out.write("# bin_um " + str(self.bin_um) + "\n")
+        with open(ofile, 'w') as out:
+            out.write("# s2r_cm " + str(self.s2r_cm) + "\n")
+            out.write("# s2d_cm " + str(self.s2d_cm) + "\n")
+            out.write("# Ep_MeV " + str(self.Ep_MeV) + "\n")
+            out.write("# bin_um " + str(self.bin_um) + "\n")
+            
+            out.write("# flux2D " + str(self.flux2D.shape) + "\n")
+            out.write("# flux2D_ref " + str(self.flux2D_ref.shape) + "\n")
+            out.write("# mask " + str(self.mask.shape) + "\n")
+            out.write("# x-mask " + str(self.x_select[0]) 
+                      + " %" + " - " + str(self.x_select[1]) + " %" + "\n")
+            out.write("# y-mask " + str(self.y_select[0]) 
+                      + " %" + " - " + str(self.y_select[1]) + " %" + "\n")
         
-        out.write("# flux2D " + str(self.flux2D.shape) + "\n")
-        out.write("# flux2D_ref " + str(self.flux2D_ref.shape) + "\n")
-        out.write("# mask " + str(self.mask.shape) + "\n")
-        out.write("# x-mask " + str(self.x_select[0]) 
-                  + " %" + " - " + str(self.x_select[1]) + " %" + "\n")
-        out.write("# y-mask " + str(self.y_select[0]) 
-                  + " %" + " - " + str(self.y_select[1]) + " %" + "\n")
-
-        self.flux2D.tofile(out,",")
-        out.write(",")
-        self.flux2D_ref.tofile(out,",")
-        out.write(",")
-        self.mask.tofile(out,",")
+        with open(ofile, 'ab') as out:
+            np.savetxt(out, self.flux2D, delimiter=',', newline='\n')
+            np.savetxt(out, self.flux2D_ref, delimiter=',', newline='\n')
+            np.savetxt(out, self.mask, delimiter=',', newline='\n')
         
-        out.close()
         print("Intermediate prad object file written to '" + ofile + "'.")
 
 if __name__ == "__main__":
