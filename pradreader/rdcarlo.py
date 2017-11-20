@@ -17,7 +17,7 @@ import os
 import math
 import numpy as np
 import pandas as pd
-from .fluxmap import fluxMap # For binning the proton list x/y values
+from fluxmap import fluxMap # For binning the proton list x/y values
 
 def readCarlo(fname, bin_um = 320):
     """ Read in and histogram a Carlo's blob.out proton radiography file.

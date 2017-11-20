@@ -14,7 +14,7 @@ TODO:
 import re
 import os
 import numpy as np
-from .fluxmap import fluxMap # For binning the proton list x/y values
+from fluxmap import fluxMap # For binning the proton list x/y values
 
 def readFlash4(fn, bin_um = 320):
     """ Read in and histogram a FLASH4 proton radiography file.
