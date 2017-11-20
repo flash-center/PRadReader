@@ -1,5 +1,6 @@
 # test files
 test/input.txt
+test/input.p
 test/plots/
 
 # vim swap files

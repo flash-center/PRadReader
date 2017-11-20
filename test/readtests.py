@@ -20,4 +20,5 @@ if __name__ == "__main__":
     myrad.prompt() # Fill in the gaps on parameters
     myrad.genmask() # Re-generate the mask from x/y tuples
     myrad.write(ofile='input.txt')
+    myrad.pickle(ofile='input.p')
     myrad.plot(plotdir='plots')

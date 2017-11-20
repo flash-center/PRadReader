@@ -16,6 +16,10 @@ import datetime
 from builtins import input 
 from re import match
 import numpy as np
+try:
+   import cPickle as pickle
+except:
+   import pickle
 from .rdflash import readFlash4
 from .rdmit import readmitcsv
 from .rdcarlo import readCarlo
@@ -237,7 +241,15 @@ class prad(object):
             np.savetxt(out, self.flux2D_ref, delimiter=',', newline='\n')
         
         print("Intermediate prad object file written to '" + ofile + "'.")
-    
+
+    def pickle(self, ofile="input.p"):
+        """
+        Write a pickled pradreader object. Use for only quick-and-dirty cases.
+        """
+        print("Writing pickled prad object file.")
+        pickle.dump(self, open(ofile, 'wb'))
+        print("Pickled prad object file written to '" + ofile + "'.")
+            
     def __readPRR(self):
         """
         (Private) Read the pradreader intermediate file format
@@ -259,6 +271,15 @@ def loadPRR(ifile='input.txt'):
     pr.genmask() # Generate the 2D mask from x/y tuples
     pr.validate() # Validate that all prad object elements are looking good
     return pr
+
+def loadPRRp(ifile='input.p'):
+    """
+    Loads in a pradreader (PRR) pickled object with no CLI input from user
+    
+    Should be only used for quick and dirty applications, as pickle not a recommended way to share between users or computers
+    """
+    pr = pickle.load(open(ifile, 'rb'))
+    return pr
     
 if __name__ == "__main__":
     pr = prad(sys.argv[0]) # Set the filename, initialize the object
@@ -269,4 +290,5 @@ if __name__ == "__main__":
     pr.genmask() # Generate the mask from x/y tuples
     pr.validate() # Validate that the elements are looking good
     pr.plot(plotdir='plots') # Save some flux plots
-    pr.write(ofile='input.txt') # Write the intermediate prad object file
+    pr.write(ofile='input.txt') # Write the intermediate prad object file (shared uses)
+    pr.pickle(ofile='input.p') # Write the pickled prad object file (quick and dirty uses)
