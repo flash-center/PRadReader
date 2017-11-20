@@ -1,12 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
-reader.py: Read in proton radiography of various sources (FLASH4, ...)
+reader.py: Classes and functions for reading in proton radiography of various sources (FLASH4, ...)
 Includes the 'prad' class, which defines an object holding proton radiography data
 
 Created by Scott Feister, J.T. Laune, and Alemayehu Bogale on Fri Jul 28 18:11:48 2017
-
-Call via "python reader.py filename". Will prompt for additional info.
 """
 
 import sys
@@ -290,13 +288,5 @@ def loadPRRp(ifile='input.p'):
     return pr
 
 if __name__ == "__main__":
-    pr = prad(sys.argv[1]) # Set the filename, initialize the object
-    # TODO Insert here: Try and guess the rtype by looking at the file (version 2)
-    pr.read() # Read the file contents; prompt for file type as needed
-    pr.show() # Display what was just read in
-    pr.prompt() # Fill in the gaps on parameters
-    pr.genmask() # Generate the mask from x/y tuples
-    pr.validate() # Validate that the elements are looking good
-    pr.write(ofile='input.txt') # Write the intermediate prad object file (shared uses)
-    pr.pickle(ofile='input.p') # Write the pickled prad object file (quick and dirty uses)
-    pr.plot(plotdir='plots') # Save some flux plots
+    # Note! Executable features previously found here have been moved into the "PRadReader/bin" directory
+    pass
