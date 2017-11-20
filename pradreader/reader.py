@@ -141,10 +141,17 @@ class prad(object):
             PNG of the flux map
         """
         print("Making plots of flux map and reference flux map.")
-        if not os.path.exists(plotdir):
-            os.makedirs(plotdir) # Make the folder hierarchy; ok if it already exists
-        fluxPlot(os.path.join(plotdir, "reference_flux.png"), self.flux2D_ref, self.bin_um)
+        
+        # Create the plot directory, if needed
+        try: # Code here basically replicates effect of python3's os.makedirs(plotdir, exist_ok=True) but for python2&3
+            os.makedirs(plotdir) # Make the folder hierarchy
+        except OSError: #  ok if path already exists
+            if not os.path.isdir(plotdir):
+                raise
+        
+        # Make the plots and save them into the directory
         fluxPlot(os.path.join(plotdir, "flux.png"), self.flux2D, self.bin_um)
+        fluxPlot(os.path.join(plotdir, "reference_flux.png"), self.flux2D_ref, self.bin_um)
         print("Plots saved into directory '" + plotdir + "'")
 
     def read(self):
@@ -290,6 +297,6 @@ if __name__ == "__main__":
     pr.prompt() # Fill in the gaps on parameters
     pr.genmask() # Generate the mask from x/y tuples
     pr.validate() # Validate that the elements are looking good
-    pr.plot(plotdir='plots') # Save some flux plots
     pr.write(ofile='input.txt') # Write the intermediate prad object file (shared uses)
     pr.pickle(ofile='input.p') # Write the pickled prad object file (quick and dirty uses)
+    pr.plot(plotdir='plots') # Save some flux plots
