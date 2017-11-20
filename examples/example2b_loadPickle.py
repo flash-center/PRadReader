@@ -1,23 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-loadIntermediate.py: Example showing how to load and use a PRR intermediate file object
+loadPickle.py: Example showing how to load and use a PRR pickled file object (quick and dirty use recommended only; use intermediate file object for sharing data files)
+
+This example will work only after running Example 1.
 
 Created by Scott Feister on Thu Nov 16 15:41:38 2017
 """
 
-import sys
-sys.path.append("..") # TODO: Not need this line.
-
-from pradreader.reader import loadPRR
+from pradreader.reader import loadPRRp
 
 def myalgorithm(prad):
     """ Your algorithm that runs on proton radiography data """
     pass
 
 if __name__ == "__main__":
-    filename = "../test/input.txt" # Path to your intermediate .txt file
-    prad = loadPRR(filename) # Load your proton radiography file
+    filename = "./input.p" # Path to your intermediate .txt file
+    prad = loadPRRp(filename) # Load your proton radiography file
     
     print(prad.s2r_cm)
     print(prad.s2d_cm)
