@@ -20,11 +20,11 @@ try:
    import cPickle as pickle
 except:
    import pickle
-from rdflash import readFlash4
-from rdmit import readmitcsv
-from rdcarlo import readCarlo
-from fluxmap import fluxPlot
-from rdgeneric import readtxt
+from .rdflash import readFlash4
+from .rdmit import readmitcsv
+from .rdcarlo import readCarlo
+from .fluxmap import fluxPlot
+from .rdgeneric import readtxt
 
 class prad(object):
     """
