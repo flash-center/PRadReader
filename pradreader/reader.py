@@ -143,8 +143,8 @@ class prad(object):
         print("Making plots of flux map and reference flux map.")
         if not os.path.exists(plotdir):
             os.makedirs(plotdir) # Make the folder hierarchy; ok if it already exists
-        fluxPlot(os.path.join(plotdir, "reference_flux.png"), self.flux2D, self.bin_um)
-        fluxPlot(os.path.join(plotdir, "flux.png"), self.flux2D_ref, self.bin_um)
+        fluxPlot(os.path.join(plotdir, "reference_flux.png"), self.flux2D_ref, self.bin_um)
+        fluxPlot(os.path.join(plotdir, "flux.png"), self.flux2D, self.bin_um)
         print("Plots saved into directory '" + plotdir + "'")
 
     def read(self):
