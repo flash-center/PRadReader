@@ -229,9 +229,8 @@ class prad(object):
         print("Intermediate prad object file written to '" + ofile + "'.")
 
     def read_intermediate(self, ifile):
-        pass
-
-
+        with open(ifile, 'r') as fin:
+            pass
 
 if __name__ == "__main__":
     myrad = prad(sys.argv[0]) # Set the filename, initialize the object
