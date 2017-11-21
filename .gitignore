@@ -1,6 +1,8 @@
 # test files
-test/input.txt
-test/plots/
+input.txt
+input.p
+rad1.csv
+plots/
 
 # vim swap files
 *.swp
