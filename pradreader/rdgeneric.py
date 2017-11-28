@@ -19,12 +19,12 @@ def readtxt(fn, delimiter=None):
         flux2D (array): Numpy 2D array of proton flux at the detector
                         (counts/bin).
         flux2D_ref (array): REFERENCE proton flux at the detector (counts/bin).
-                            Equals what flux2D would be in the 
+                            Equals what flux2D would be in the
                             absence of magnetic fields.
     """
     # Open up the file for reading.
     flux2D = np.loadtxt(fn, delimiter=delimiter)
     flux2D_ref = np.zeros(flux2D.shape)
     flux2D_ref[:] = np.mean(flux2D)
-    
+
     return(flux2D, flux2D_ref)

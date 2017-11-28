@@ -51,9 +51,9 @@ class prad(object):
     Outputs:
 
     """
-    def __init__(self):
+    def __init__(self, ifile=None):
         # Attributes.
-        self.filename = None
+        self.filename = ifile
         self.rtype = None
         self.flux2D = None
         self.flux2D_ref = None
@@ -105,7 +105,10 @@ class prad(object):
               "to complete the Prad object.")
         for key in self.prompts.keys():
             if getattr(self, key) is None:
-                setattr(self, key, float(input(self.prompts[key])))
+                if key == 'rtype':
+                    setattr(self, key, str(input(self.prompts[key])))
+                else:
+                    setattr(self, key, float(input(self.prompts[key])))
             if getattr(self,key) == (0,100):
                 setattr(self, key, tuple(map(float, input(self.prompts[key]).split())))
 
@@ -140,32 +143,30 @@ class prad(object):
             PNG of the flux map
         """
         print("Making plots of flux map and reference flux map.")
-        
+
         # Create the plot directory, if needed
         try: # Code here basically replicates effect of python3's os.makedirs(plotdir, exist_ok=True) but for python2&3
             os.makedirs(plotdir) # Make the folder hierarchy
         except OSError: #  ok if path already exists
             if not os.path.isdir(plotdir):
                 raise
-        
+
         # Make the plots and save them into the directory
         fluxPlot(os.path.join(plotdir, "flux.png"), self.flux2D, self.bin_um)
         fluxPlot(os.path.join(plotdir, "reference_flux.png"), self.flux2D_ref, self.bin_um)
         print("Plots saved into directory '" + plotdir + "'")
 
-    def read(self, filename):
+    def read(self):
         """
         Read in a proton radiography input file
         """
-        self.filename = filename
-
         if self.rtype is None:
             self.rtype = input(self.prompts['rtype'])
 
         print("Reading contents of file: " + self.filename)
 
         if self.rtype == 'prr':
-            self.__readPRR() # Intermediate file format; replace everything
+            self.readPRR() # Intermediate file format; replace everything
 
         elif self.rtype == 'flash4':
             if self.bin_um == None:
@@ -190,7 +191,7 @@ class prad(object):
                 flux2D, flux2D_ref = readtxt(self.filename, delimiter=',')
             except(ValueError):
                 flux2D, flux2D_ref = readtxt(self.filename)
-            
+
             self.flux2D = flux2D
             self.flux2D_ref = flux2D_ref
 
@@ -251,6 +252,7 @@ class prad(object):
         with open(ofile, 'ab') as out:
             np.savetxt(out, self.flux2D, delimiter=',', newline='\n')
             np.savetxt(out, self.flux2D_ref, delimiter=',', newline='\n')
+            np.savetxt(out, self.mask, delimiter=',', newline='\n')
 
         print("Intermediate prad object file written to '" + ofile + "'.")
 
@@ -262,7 +264,7 @@ class prad(object):
         pickle.dump(self, open(ofile, 'wb'))
         print("Pickled prad object file written to '" + ofile + "'.")
 
-    def __readPRR(self):
+    def readPRR(self):
         """
         (Private) Read the pradreader intermediate file format
         """
@@ -290,7 +292,12 @@ class prad(object):
                 if match('# y-mask', line):
                     self.y = float(line.split()[2])
 
-                line = fd.readline()
+                line = f.readline()
+
+        tot_arr = np.loadtxt(self.filename, comments="#", delimiter=",")
+        print(tot_arr.shape)
+        self.flux2D, self.flux2D_ref, self.mask = np.split(tot_arr, 3, axis=0)
+
 
 def loadPRR(ifile='input.txt'):
     """
