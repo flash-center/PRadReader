@@ -51,9 +51,9 @@ class prad(object):
     Outputs:
 
     """
-    def __init__(self, filename):
+    def __init__(self):
         # Attributes.
-        self.filename = filename
+        self.filename = None
         self.rtype = None
         self.flux2D = None
         self.flux2D_ref = None
@@ -100,8 +100,9 @@ class prad(object):
         """
         If the attributes are not set, prompt the user for input.
         """
-        print("The Prad object needs to be supplemented. "\
-                "Please answer the following questions to complete the Prad object.")
+        print("The Prad object needs to be supplemented. " \
+              "Please answer the following questions " \
+              "to complete the Prad object.")
         for key in self.prompts.keys():
             if getattr(self, key) is None:
                 setattr(self, key, float(input(self.prompts[key])))
@@ -152,10 +153,11 @@ class prad(object):
         fluxPlot(os.path.join(plotdir, "reference_flux.png"), self.flux2D_ref, self.bin_um)
         print("Plots saved into directory '" + plotdir + "'")
 
-    def read(self):
+    def read(self, filename):
         """
         Read in a proton radiography input file
         """
+        self.filename = filename
 
         if self.rtype is None:
             self.rtype = input(self.prompts['rtype'])
@@ -184,7 +186,11 @@ class prad(object):
             self.bin_um = bin_um
 
         elif self.rtype == 'csv':
-            flux2D, flux2D_ref = readtxt(self.filename)
+            try:
+                flux2D, flux2D_ref = readtxt(self.filename, delimiter=',')
+            except(ValueError):
+                flux2D, flux2D_ref = readtxt(self.filename)
+            
             self.flux2D = flux2D
             self.flux2D_ref = flux2D_ref
 
@@ -263,7 +269,28 @@ class prad(object):
         # TODO here: Check the PRR file version is appropriate!
         with open(self.filename) as f:
             # TODO here: Read in the file contents!
-            pass
+            line = f.readline()
+            while match('#', line):
+
+                if match('# s2r_cm', line):
+                    self.s2r_cm = float(line.split()[2])
+
+                if match('# s2d_cm', line):
+                    self.s2d_cm = float(line.split()[2])
+
+                if match('# Ep_MeV', line):
+                    self.Ep_MeV = float(line.split()[2])
+
+                if match('# bin_um', line):
+                    self.bin_um = float(line.split()[2])
+
+                if match('# x-mask', line):
+                    self.x = float(line.split()[2])
+
+                if match('# y-mask', line):
+                    self.y = float(line.split()[2])
+
+                line = fd.readline()
 
 def loadPRR(ifile='input.txt'):
     """

@@ -8,7 +8,7 @@ Created by Scott Feister on Fri Oct 20 14:00:22 2017
 
 import numpy as np
 
-def readtxt(fn):
+def readtxt(fn, delimiter=None):
     """
     Read in a generic text file containing a 2D flux array as delimited values.
 
@@ -23,7 +23,7 @@ def readtxt(fn):
                             absence of magnetic fields.
     """
     # Open up the file for reading.
-    flux2D = np.loadtxt(fn)
+    flux2D = np.loadtxt(fn, delimiter=delimiter)
     flux2D_ref = np.zeros(flux2D.shape)
     flux2D_ref[:] = np.mean(flux2D)
     
