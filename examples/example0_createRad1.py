@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-createRad1.py: This script was run to create rad1.csv, the example flux input
+createRad1.py: Creates rad1.csv, the example flux input used in other examples
 
-This script is included just 
+This script is included just to create a test file to be used in examples 1, 2a, and 2b. See those examples for typical use of PRadReader.
 
 Created by Scott Feister on Mon Nov 20 15:09:05 2017
 """
