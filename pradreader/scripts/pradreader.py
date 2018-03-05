@@ -14,13 +14,12 @@ def get_input():
                         default="input.txt",
                         help="")
 
-
     args = parser.parse_args()
 
     return(args)
 
 
-def read_into_prr():
+def read_into_PRR():
     args = get_input()
     print(args)
     prad = pradreader.reader.prad(args.input_file)
@@ -31,4 +30,4 @@ def read_into_prr():
     prad.write(ofile=args.outname)
 
 if __name__=="__main__":
-    read_into_prr()
+    read_into_PRR()

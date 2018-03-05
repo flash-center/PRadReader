@@ -308,7 +308,6 @@ def loadPRR(ifile='input.txt'):
     pr = prad(ifile) # Initialize a prad object with this filename
     pr.rtype = 'prr' # Specify filetype
     pr.read() # Read in the file
-    pr.genmask() # Generate the 2D mask from x/y tuples
     pr.validate() # Validate that all prad object elements are looking good
     return pr
 
