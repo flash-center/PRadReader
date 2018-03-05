@@ -9,6 +9,7 @@ Call via "python pr-read.py filename". Will prompt user for additional info.
 
 """
 
+import sys
 from pradreader.reader import prad
 
 # TODO: Add optional flags for output files, anything else

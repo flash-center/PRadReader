@@ -17,3 +17,9 @@ Install the package:
 ```bash
 python setup.py install
 ```
+
+Alternatively, if you do not have root permissions, install the package to your user directory:
+
+```bash
+python setup.py install --user
+```
