@@ -58,8 +58,6 @@ class prad(object):
         self.s2d_cm = None
         self.Ep_MeV = None
         self.bin_um = None
-        self.x_select = (0,100)
-        self.y_select = (0,100)
 
         # Prompts.
         self.prompts = {
