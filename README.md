@@ -1,4 +1,5 @@
-# PRadReader code (Proton Radiography Readder)
+# PRadReader code (Proton Radiography Reader)
+PRadReader code
 # Setup
 
 ## Dependencies
