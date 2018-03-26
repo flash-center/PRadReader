@@ -44,9 +44,6 @@ class prad(object):
         bin_um (float): Pixel size of radiograph (in um)
         flux2D (array): 2D array of flux values
         flux2D_ref (array): 2D array of reference flux values
-        mask (array): Flux mask (constructed based on x_select, y_select)
-        x_select (tuple): (beginning, ending) in % of flux mask in y-direction
-        y_select (tuple): (beginning, ending) in % of flux mask in y-direction
 
     Outputs:
 
@@ -61,9 +58,6 @@ class prad(object):
         self.s2d_cm = None
         self.Ep_MeV = None
         self.bin_um = None
-        self.mask = None
-        self.x_select = (0,100)
-        self.y_select = (0,100)
 
         # Prompts.
         self.prompts = {
@@ -73,12 +67,6 @@ class prad(object):
                 's2d_cm' : 'Distance from the source to the screen (in cm): ' ,
                 'Ep_MeV' : 'Proton energy (in MeV): ',
                 'bin_um' : 'Pixel size of radiograph (in um): ',
-                'x_select' : 'Flux % selection in x-direction.' \
-                             'Enter two numbers separated by a space.' \
-                             '(e.g., "0 100"): ',
-                'y_select' : 'Flux % selection in y-direction ' \
-                             'Enter two numbers separated by a space. ' \
-                             '(e.g., "0 100"): ',
                 }
 
     def __str__(self):
@@ -112,26 +100,8 @@ class prad(object):
             if getattr(self,key) == (0,100):
                 setattr(self, key, tuple(map(float, input(self.prompts[key]).split())))
 
-    def genmask(self):
-        """
-        Generate the mask array from flux2D array size and x_select, y_select tuples
-        """
-        print("Generating 2D mask array...")
-        self.mask = np.ones(self.flux2D.shape)
-        start_x = self.x_select[0]
-        end_x = self.x_select[1]
-        start_y = self.y_select[0]
-        end_y = self.y_select[1]
-
-        xbeg = int(np.round((start_x/100.0) * self.mask.shape[0]))
-        xend = int(np.round((end_x/100.0) * self.mask.shape[0]))
-        ybeg = int(np.round((start_y/100.0) * self.mask.shape[1]))
-        yend = int(np.round((end_y/100.0) * self.mask.shape[1]))
-        self.mask[xbeg:xend, ybeg:yend] = 0
-        print("Mask generated.")
 
     # TODO: Expand this to make a labeled plot the geometry of the target/detector
-    # TODO: Show the masking in the flux map plot, e.g. via a labeled rectangle or shaded portion
     # TODO: Test this function works
     def plot(self, plotdir='plots'):
         """
@@ -226,7 +196,7 @@ class prad(object):
         Output file:
             input.txt (file): the intermediate file for every file input
                 e.g. contains s2r_cm, s2d_cm, Ep_MeV, bin_um,
-                flux2D, flux2D_ref, and mask
+                flux2D, and flux2D_ref.
         Note: This object can be reloaded via:
             pr = reader.loadPRR('input.txt')
         """
@@ -244,15 +214,10 @@ class prad(object):
 
             out.write("# flux2D " + str(self.flux2D.shape) + "\n")
             out.write("# flux2D_ref " + str(self.flux2D_ref.shape) + "\n")
-            out.write("# x-mask " + str(self.x_select[0])
-                      + " %" + " - " + str(self.x_select[1]) + " %" + "\n")
-            out.write("# y-mask " + str(self.y_select[0])
-                      + " %" + " - " + str(self.y_select[1]) + " %" + "\n")
 
         with open(ofile, 'ab') as out:
             np.savetxt(out, self.flux2D, delimiter=',', newline='\n')
             np.savetxt(out, self.flux2D_ref, delimiter=',', newline='\n')
-            np.savetxt(out, self.mask, delimiter=',', newline='\n')
 
         print("Intermediate prad object file written to '" + ofile + "'.")
 
@@ -286,17 +251,12 @@ class prad(object):
                 if match('# bin_um', line):
                     self.bin_um = float(line.split()[2])
 
-                if match('# x-mask', line):
-                    self.x = float(line.split()[2])
-
-                if match('# y-mask', line):
-                    self.y = float(line.split()[2])
 
                 line = f.readline()
 
         tot_arr = np.loadtxt(self.filename, comments="#", delimiter=",")
         print(tot_arr.shape)
-        self.flux2D, self.flux2D_ref, self.mask = np.split(tot_arr, 3, axis=0)
+        self.flux2D, self.flux2D_ref = np.split(tot_arr, 2, axis=0)
 
 
 def loadPRR(ifile='input.txt'):

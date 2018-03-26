@@ -3,6 +3,9 @@ input.txt
 input.p
 rad1.csv
 plots/
+flux.dat
+test.txt
+test_read.py
 
 # vim swap files
 *.swp

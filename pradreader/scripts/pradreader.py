@@ -25,7 +25,6 @@ def read_into_PRR():
     prad = pradreader.reader.prad(args.input_file)
     prad.read()
     prad.prompt()
-    prad.genmask()
     prad.show()
     prad.write(ofile=args.outname)
 
