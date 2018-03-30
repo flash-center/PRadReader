@@ -1,5 +1,13 @@
 # PRadReader code (Proton Radiography Reader)
-PRadReader code
+
+PRadReader is intended to provide an interface to read in various experimental and simulated proton radiography data for analysis with the Python libraries
+[PRaLine](https://github.com/flash-center/PRaLine) and [PROBLEM](https://github.com/flash-center/PROBLEM).
+
+The typical workflow for PRadReader & PRaLine/PROBLEM is as follows:
+
+![Workflow](images/workflow.png)
+
+
 # Setup
 
 ## Dependencies
