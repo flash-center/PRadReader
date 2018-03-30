@@ -1,11 +1,17 @@
 # PRadReader code (Proton Radiography Reader)
 
-PRadReader is intended to provide an interface to read in various experimental and simulated proton radiography data for analysis with the Python libraries
+PRadReader is intended to provide an interface to read in various experimental and simulated proton radiography flux data for analysis with the Python libraries
 [PRaLine](https://github.com/flash-center/PRaLine) and [PROBLEM](https://github.com/flash-center/PROBLEM).
 
-The typical workflow for PRadReader & PRaLine/PROBLEM is as follows:
+The typical workflow for PRadReader and PRaLine/PROBLEM is as follows:
 
 ![Workflow](images/workflow.png)
+
+PRadReader takes various experimental and simulated proton radiography data, reads it, prompts the user for additional experimental setup data (including relevant distances from the source to the plasma, across the plasma, etc.) and compiles it into a PRR data file.
+PRaLine and PROBLEM both include command line tools to read in PRR data files to perform their reconstruction algorithms with the data inside.
+
+The currently supported formats are: FLASH4 output, MIT csv, and regular csv files with the radiography flux data inside.
+
 
 
 # Setup
@@ -48,4 +54,13 @@ Alternatively, if you do not have root permissions, install the package to your 
 ```bash
 python setup.py install --user
 ```
+## Usage
 
+PRadReader includes a commmand line tool `pradreader` to automatically handle reading experimental and simulated proton radiography data for the supported formats listed above. 
+In order to use it, first install PRadReader and then type
+
+```bash
+pradreader myfile.ext -o prr_file.txt
+```
+
+to read the file `myfile.ext`. PRadReader will then prompt you for the file type (FLASH4, MIT, csv) and will prompt you for the relevant distances and other information needed for the reconstruction process. It will save a PRR data file to the output `prr_file.txt`. Then, using PRaLine or PROBLEM, you can use `prr_file.txt` to complete your analysis of the radiography flux data.
