@@ -85,7 +85,7 @@ def fluxPlot(outfn, flux2D, bin_um):
     plt.close(fig)
     return
 
-def fluenceContrast(outfn, flux2D, flux2D_ref, bin_um, vmin=None, vmax=None):
+def fluenceContrast(outfn, flux2D, flux2D_ref, bin_um, vmin=None, vmax=None, cmap='viridis'):
     """ Example plotting function for a radiograph, using matplotlib
     Inputs:
         outfn: String, full filename (including path) of the image file to write, e.g. "/home/myouts/myradiograph.png"
@@ -93,6 +93,7 @@ def fluenceContrast(outfn, flux2D, flux2D_ref, bin_um, vmin=None, vmax=None):
         flux2D_ref: Numpy array, 2D, reference proton flux at the detector (a.u.)
         bin_um: Float, size of the square edge lengths with which to divide the detector for binning
         vmin, vmax: Max and min for the colorplot
+        cmap: Colormap for colorplot
     Outputs:
         Saves a fluence contrast map plot  [ (flux - flux_ref) / flux_ref ] to the specified input file.
     
@@ -113,7 +114,7 @@ def fluenceContrast(outfn, flux2D, flux2D_ref, bin_um, vmin=None, vmax=None):
     if vmax is None:
         vmax = np.max(fluence_contrast)
         
-    cax = ax.pcolorfast([0, xmax], [0, ymax], fluence_contrast, cmap='viridis', vmin=vmin, vmax=vmax)
+    cax = ax.pcolorfast([0, xmax], [0, ymax], fluence_contrast, cmap=cmap, vmin=vmin, vmax=vmax)
     cbar = fig.colorbar(cax, label='Fluence contrast (unitless)')
     ax.set_aspect('equal')
 
